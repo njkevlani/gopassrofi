@@ -60,20 +60,18 @@ func main() {
 		// Existing password selected
 		switch res.Action {
 		case dmenu.ActionAccept: // Enter -> Copy Password
-			err := pass.CopyPassword(res.Selection)
+			err := pass.CopyPassword(res.Selection, "gopassrofi", fmt.Sprintf("Password for '%s' copied to clipboard!", res.Selection))
 			if err != nil {
 				_ = dmenu.ShowMessage(fmt.Sprintf("Error copying password: %v", err))
 			} else {
-				dmenu.NotifySend("gopassrofi", fmt.Sprintf("Password for '%s' copied to clipboard!", res.Selection))
 				return
 			}
 
 		case dmenu.ActionCustom1: // Alt+Enter -> Copy OTP
-			err := pass.CopyOTP(res.Selection)
+			err := pass.CopyOTP(res.Selection, "gopassrofi", fmt.Sprintf("OTP for '%s' copied to clipboard!", res.Selection))
 			if err != nil {
 				_ = dmenu.ShowMessage(fmt.Sprintf("Error copying OTP: %v", err))
 			} else {
-				dmenu.NotifySend("gopassrofi", fmt.Sprintf("OTP for '%s' copied to clipboard!", res.Selection))
 				return
 			}
 
@@ -142,13 +140,12 @@ func handleCreatePassword(defaultName string) bool {
 	}
 
 	// Copy the newly created password to clipboard
-	err = pass.CopyPassword(name)
+	err = pass.CopyPassword(name, "gopassrofi", fmt.Sprintf("Password '%s' created and copied to clipboard!", name))
 	if err != nil {
 		_ = dmenu.ShowMessage(fmt.Sprintf("Password created, but copying failed: %v", err))
 		return false
 	}
 
-	dmenu.NotifySend("gopassrofi", fmt.Sprintf("Password '%s' created and copied to clipboard!", name))
 	return true
 }
 
@@ -177,20 +174,18 @@ func showOtherOptions(entryName string) bool {
 
 	switch res.Selection {
 	case "Copy Password":
-		err := pass.CopyPassword(entryName)
+		err := pass.CopyPassword(entryName, "gopassrofi", fmt.Sprintf("Password for '%s' copied to clipboard!", entryName))
 		if err != nil {
 			_ = dmenu.ShowMessage(fmt.Sprintf("Error copying password: %v", err))
 		} else {
-			dmenu.NotifySend("gopassrofi", fmt.Sprintf("Password for '%s' copied to clipboard!", entryName))
 			return true
 		}
 
 	case "Copy OTP":
-		err := pass.CopyOTP(entryName)
+		err := pass.CopyOTP(entryName, "gopassrofi", fmt.Sprintf("OTP for '%s' copied to clipboard!", entryName))
 		if err != nil {
 			_ = dmenu.ShowMessage(fmt.Sprintf("Error copying OTP: %v", err))
 		} else {
-			dmenu.NotifySend("gopassrofi", fmt.Sprintf("OTP for '%s' copied to clipboard!", entryName))
 			return true
 		}
 
@@ -242,8 +237,7 @@ func showOtherOptions(entryName string) bool {
 		if err != nil {
 			_ = dmenu.ShowMessage(fmt.Sprintf("Error generating password: %v", err))
 		} else {
-			_ = pass.CopyPassword(entryName)
-			dmenu.NotifySend("gopassrofi", fmt.Sprintf("New password generated and copied for '%s'!", entryName))
+			_ = pass.CopyPassword(entryName, "gopassrofi", fmt.Sprintf("New password generated and copied for '%s'!", entryName))
 			return true
 		}
 
@@ -261,8 +255,7 @@ func showOtherOptions(entryName string) bool {
 		if err != nil {
 			_ = dmenu.ShowMessage(fmt.Sprintf("Error updating password: %v", err))
 		} else {
-			_ = pass.CopyPassword(entryName)
-			dmenu.NotifySend("gopassrofi", fmt.Sprintf("Password updated and copied for '%s'!", entryName))
+			_ = pass.CopyPassword(entryName, "gopassrofi", fmt.Sprintf("Password updated and copied for '%s'!", entryName))
 			return true
 		}
 

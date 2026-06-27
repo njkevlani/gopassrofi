@@ -88,21 +88,32 @@ func GeneratePassword(name string, length int) (string, error) {
 	return GetPassword(name)
 }
 
-// startPassCmd starts the pass command in the background and returns immediately without waiting for it to finish.
-func startPassCmd(args []string) error {
-	cmd := exec.Command("pass", args...)
+// CopyPassword copies the password to the clipboard using pass show -c asynchronously.
+// If notifyTitle is not empty, it will display a desktop notification using notify-send after the copy finishes.
+func CopyPassword(name string, notifyTitle, notifyBody string) error {
+	var script string
+	if notifyTitle != "" {
+		script = fmt.Sprintf("pass show -c %q && notify-send %q %q", name, notifyTitle, notifyBody)
+	} else {
+		script = fmt.Sprintf("pass show -c %q", name)
+	}
+	cmd := exec.Command("sh", "-c", script)
 	cmd.Env = append(os.Environ(), "PASSWORD_STORE_GPG_OPTS=--trust-model always")
 	return cmd.Start()
 }
 
-// CopyPassword copies the password to the clipboard using pass show -c asynchronously.
-func CopyPassword(name string) error {
-	return startPassCmd([]string{"show", "-c", name})
-}
-
 // CopyOTP copies the OTP to the clipboard using pass otp -c asynchronously.
-func CopyOTP(name string) error {
-	return startPassCmd([]string{"otp", "-c", name})
+// If notifyTitle is not empty, it will display a desktop notification using notify-send after the copy finishes.
+func CopyOTP(name string, notifyTitle, notifyBody string) error {
+	var script string
+	if notifyTitle != "" {
+		script = fmt.Sprintf("pass otp -c %q && notify-send %q %q", name, notifyTitle, notifyBody)
+	} else {
+		script = fmt.Sprintf("pass otp -c %q", name)
+	}
+	cmd := exec.Command("sh", "-c", script)
+	cmd.Env = append(os.Environ(), "PASSWORD_STORE_GPG_OPTS=--trust-model always")
+	return cmd.Start()
 }
 
 // DeletePassword deletes the password entry.
