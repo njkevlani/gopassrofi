@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=gopassrofi
+Comment=Rofi frontend for password-store
+Exec=gopassrofi
+Icon=dialog-password
+Terminal=false
+Type=Application
+Categories=Utility;Security;
