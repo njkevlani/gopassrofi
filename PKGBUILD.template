@@ -1,0 +1,38 @@
+# Maintainer: njkevlani <njkevlani@gmail.com>
+pkgname=gopassrofi-bin
+pkgver={{VERSION}}
+pkgrel=1
+pkgdesc="Rofi frontend for password-store (pass)"
+arch=('x86_64' 'aarch64')
+url="https://github.com/njkevlani/gopassrofi"
+license=('MIT')
+depends=('rofi' 'pass')
+provides=('gopassrofi')
+conflicts=('gopassrofi')
+
+source_x86_64=(
+  "gopassrofi-linux-amd64::https://github.com/njkevlani/gopassrofi/releases/download/v${pkgver}/gopassrofi-linux-amd64"
+  "gopassrofi.desktop::https://raw.githubusercontent.com/njkevlani/gopassrofi/v${pkgver}/resources/gopassrofi.desktop"
+)
+sha256sums_x86_64=(
+  "{{SHA256_AMD64}}"
+  "{{SHA256_DESKTOP}}"
+)
+
+source_aarch64=(
+  "gopassrofi-linux-arm64::https://github.com/njkevlani/gopassrofi/releases/download/v${pkgver}/gopassrofi-linux-arm64"
+  "gopassrofi.desktop::https://raw.githubusercontent.com/njkevlani/gopassrofi/v${pkgver}/resources/gopassrofi.desktop"
+)
+sha256sums_aarch64=(
+  "{{SHA256_ARM64}}"
+  "{{SHA256_DESKTOP}}"
+)
+
+package() {
+  if [ "${CARCH}" = "x86_64" ]; then
+    install -Dm755 "${srcdir}/gopassrofi-linux-amd64" "${pkgdir}/usr/bin/gopassrofi"
+  elif [ "${CARCH}" = "aarch64" ]; then
+    install -Dm755 "${srcdir}/gopassrofi-linux-arm64" "${pkgdir}/usr/bin/gopassrofi"
+  fi
+  install -Dm644 "${srcdir}/gopassrofi.desktop" "${pkgdir}/usr/share/applications/gopassrofi.desktop"
+}
